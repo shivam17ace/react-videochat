@@ -39,14 +39,26 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
   const userVideo = useRef();
   const connectionRef = useRef();
 
-  useEffect(() => {
+
+  const displayMediaStream= () => {
+    navigator.mediaDevices.getDisplayMedia({audio:true, video: {MediaSource:"screen"}})
+      .then((currentStream) => {
+        setStream(currentStream);
+        myVideo.current.srcObject = currentStream;
+      })
+  }
+
+  const getUserMediaStream = () => {
     navigator.mediaDevices
       .getUserMedia({audio:true, video:true})
       .then((currentStream) => {
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
       });
+  }
 
+  useEffect(() => {
+    getUserMediaStream()
     socket.on("calluser", ({ from, name, signal }) => {
       setReceivingCall(true);
       setCaller(from);
@@ -149,12 +161,7 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
         }
       })
     ):
-      navigator.mediaDevices.getDisplayMedia({audio:true, video: {MediaSource:"screen"}})
-      .then((currentStream) => {
-        myVideo.current.srcObject = currentStream;
-        setStream(currentStream);
-      })
-      
+    displayMediaStream()
     const data = shareScreen ? false : true;
     setShareScreen(data);
   }
@@ -166,12 +173,12 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
         <VideoContainer>
           {stream && (
             <>
-              <video playsInline ref={myVideo} muted autoPlay />
+              <video controls playsInline ref={myVideo} muted autoPlay />
             </>
           )}
           {callAccepted && !callEnded && (
             <>
-              <video playsInline ref={userVideo} autoPlay />
+              <video controls playsInline ref={userVideo} autoPlay />
             </>
           )}
         </VideoContainer>
@@ -282,6 +289,8 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
             onClick={idToCall ? leaveCall : () => window.location.reload()}
           >
             <span>{idToCall ? "Leave Meeting" : "End Meeting"}</span>
+            {/* <ControlButton onClick={handleRecord}>Record</ControlButton>
+            <ControlButton onClick={stopRecord}>Stop Record</ControlButton> */}
           </ControlsRight>
         </VideoFooter>
       </MainContainer>
