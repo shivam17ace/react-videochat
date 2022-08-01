@@ -12,6 +12,7 @@ import { useState } from "react";
 // import ParticipantsModal from "../components/ParticipantsModal";
 
 import Peer from "simple-peer";
+// import {useReactMediaRecorder} from "react-media-recorder";
 
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -38,24 +39,6 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
-
-
-  const displayMediaStream= () => {
-    navigator.mediaDevices.getDisplayMedia({audio:true, video: {MediaSource:"screen"}})
-      .then((currentStream) => {
-        setStream(currentStream);
-        myVideo.current.srcObject = currentStream;
-      })
-  }
-
-  const getUserMediaStream = () => {
-    navigator.mediaDevices
-      .getUserMedia({audio:true, video:true})
-      .then((currentStream) => {
-        setStream(currentStream);
-        myVideo.current.srcObject = currentStream;
-      });
-  }
 
   useEffect(() => {
     getUserMediaStream()
@@ -125,6 +108,24 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
     window.location.reload();
   };
 
+  const displayMediaStream= () => {
+    navigator.mediaDevices.getDisplayMedia({cursor:true})
+      .then((currentStream) => {
+        myVideo.current.srcObject = currentStream;
+        setStream(currentStream);
+      })
+  }
+
+  const getUserMediaStream = () => {
+    navigator.mediaDevices
+      .getUserMedia({audio:true, video:true})
+      .then((currentStream) => {
+        setStream(currentStream);
+        myVideo.current.srcObject = currentStream;
+      });
+  }
+
+
   const handleClick = () => {
     setModal(false);
     setIdToCall("");
@@ -166,19 +167,23 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
     setShareScreen(data);
   }
 
+  // const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true });
 
   return (
+    <>
     <Container>
       <MainContainer>
         <VideoContainer>
           {stream && (
             <>
-              <video controls playsInline ref={myVideo} muted autoPlay />
+               {/* <ControlButton onClick={startRecording}>Record</ControlButton>
+                <ControlButton onClick={stopRecording}>Stop Record</ControlButton> */}
+              <video controls playsInline ref={myVideo} muted autoPlay  />
             </>
           )}
           {callAccepted && !callEnded && (
             <>
-              <video controls playsInline ref={userVideo} autoPlay />
+              <video controls playsInline ref={userVideo} autoPlay  />
             </>
           )}
         </VideoContainer>
@@ -289,8 +294,6 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
             onClick={idToCall ? leaveCall : () => window.location.reload()}
           >
             <span>{idToCall ? "Leave Meeting" : "End Meeting"}</span>
-            {/* <ControlButton onClick={handleRecord}>Record</ControlButton>
-            <ControlButton onClick={stopRecord}>Stop Record</ControlButton> */}
           </ControlsRight>
         </VideoFooter>
       </MainContainer>
@@ -302,6 +305,7 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
         </InputContainer>
       </ChatContainer>
     </Container>
+    </>
   );
 };
 
