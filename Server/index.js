@@ -1,6 +1,10 @@
 const app = require("express")();
 const server = require("http").createServer(app);
 const cors = require("cors");
+const mongoose = require("mongoose");
+var bodyparser = require("body-parser");
+const Route = require("./Routes/index");
+require("dotenv").config();
 
 const io = require("socket.io")(server, {
   cors: {
@@ -9,13 +13,12 @@ const io = require("socket.io")(server, {
   },
 });
 
+app.use(bodyparser.json());
 app.use(cors());
+app.use("/",Route);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
-app.get("/", (req, res) => {
-  res.send("Server is running properly");
-});
 
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
@@ -37,6 +40,13 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
+mongoose
+  .connect(process.env.DATABASE)
+  .then(console.log("database connected"))
+  .catch((err) => {
+    console.log(err);
+  });
+
+app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
