@@ -35,6 +35,7 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
   const [mute, setMute] = useState(false);
   const [stopVideo, setStopVideo] = useState(false);
   const [shareScreen, setShareScreen] = useState(false);
+  
 
   const myVideo = useRef();
   const userVideo = useRef();
