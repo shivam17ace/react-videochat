@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 
 function MainScreen(){
   return(
-  //  chatRoom !== "" ? (
-  //   <ChatRoom chatRoom={chatRoom} me={me} socket={socket} />
-  // ) : (
     <div>
       <div>
         <h1>Video Chat</h1>
