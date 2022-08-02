@@ -48,6 +48,7 @@ const ChatRoom = ({ chatRoom, me, socket }) => {
       setName(name);
       setCallerSignal(signal);
     });
+    console.log(chatRoom)
   }, [socket]);
   
       

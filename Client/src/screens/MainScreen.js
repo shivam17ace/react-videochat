@@ -1,33 +1,23 @@
-import React, { useEffect, useState } from "react";
-import ChatRoom from "./ChatRoom";
-import { io } from "socket.io-client";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const socket = io("http://localhost:5000");
-const MainScreen = () => {
-  const [chatRoom, setChatRoom] = useState("");
-  const [me, setMe] = useState("");
-  useEffect(() => {
-    socket.on("me", (id) => {
-      setMe(id);
-      console.log("socket.on(me) ran");
-    });
-  }, []);
-
-  return chatRoom !== "" ? (
-    <ChatRoom chatRoom={chatRoom} me={me} socket={socket} />
-  ) : (
+function MainScreen(){
+  return(
+  //  chatRoom !== "" ? (
+  //   <ChatRoom chatRoom={chatRoom} me={me} socket={socket} />
+  // ) : (
     <div>
       <div>
         <h1>Video Chat</h1>
         <div>
-          <button primary onClick={() => setChatRoom("host")}>
-            Create a Room
+          <button primary>
+            <Link to ='/createroom'>Create a Room</Link>
           </button>
-          <button onClick={() => setChatRoom("guest")}>Join a Room</button>
+          <button><Link to ='/joinroom'>Join a Room</Link></button>
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default MainScreen;
